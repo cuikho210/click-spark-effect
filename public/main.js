@@ -137,11 +137,12 @@ var Main = /** @class */ (function () {
         this.start();
     }
     Main.prototype.createCanvas = function () {
-        this.canvas.style.position = 'absolute';
+        this.canvas.style.position = 'fixed';
         this.canvas.style.top = '0';
         this.canvas.style.left = '0';
         this.canvas.style.width = '100%';
         this.canvas.style.height = '100%';
+        this.canvas.style.zIndex = '99999';
         this.canvas.style.pointerEvents = 'none';
         this.resizeCanvas();
         this.parentElement.appendChild(this.canvas);

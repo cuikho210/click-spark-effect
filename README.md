@@ -2,7 +2,7 @@
 Hiệu ứng tia lửa mỗi khi bạn click chuột ^^
 
 [[Release]](https://github.com/cuikho210/click-spark-effect/releases/tag/module)  
-[[Demo]](#)
+[[Demo]](https://cuikho210.github.io/click-spark-effect/public)
 
 ## Config
 ``` js

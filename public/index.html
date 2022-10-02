@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            background-color: #111;
+            color: #fff
+        }
+
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: .5rem 1rem;
+            background-color: #ff907f;
+            border-radius: 5px;
+            transition: background-color .5s;
+        }
+
+        .btn:hover {
+            background-color: #ff90ff;
+        }
+
+        .btn:active {
+            top: 1px;
+        }
+    </style>
+</head>
+<body>
+<section>
+    <h1>Title</h1>
+    <p>Test</p>
+
+    <a href="https://google.com">[Google]</a>
+    <hr>
+
+    <div class="btn">Test Button</div>
+</section>
+    
+<script type="module">
+    import SparkEffect from "./main.js"
+
+    new SparkEffect({
+        color: 'rgb(255,144,255)'
+    })
+</script>
+</body>
+</html>

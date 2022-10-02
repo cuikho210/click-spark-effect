@@ -1,13 +1,8 @@
 // Dot
 var Dot = /** @class */ (function () {
-    function Dot(ctx, color, position) {
-        this.dotRadius = 1.5;
-        this.angle = Math.random() * (Math.PI * 2);
-        this.fadeSpeed = Math.random() * 0.05 + 0.01;
+    function Dot(ctx, color, position, config) {
         this.gravity = 0;
-        this.gravityAcceleration = 0.1;
         this.distance = 0;
-        this.velocity = Math.random() * 4;
         this.currentPosition = {
             x: 0,
             y: 0
@@ -15,6 +10,11 @@ var Dot = /** @class */ (function () {
         this.ctx = ctx;
         this.color = color;
         this.rootPosition = position;
+        this.dotRadius = config.dotRadius;
+        this.gravityAcceleration = config.gravity;
+        this.fadeSpeed = config.fadeSpeed();
+        this.velocity = config.velocity();
+        this.angle = config.angle();
     }
     Dot.prototype.draw = function () {
         this.ctx.beginPath();
@@ -59,17 +59,36 @@ var Dot = /** @class */ (function () {
 }());
 // Spark
 var Spark = /** @class */ (function () {
-    function Spark(ctx, color, mousePosition, dotsLength) {
+    function Spark(ctx, color, mousePosition, dotsLength, dotConfig) {
+        this.dotConfig = {
+            dotRadius: 1.5,
+            gravity: 0.2,
+            velocity: function () { return Math.random() * 3 + 1; },
+            fadeSpeed: function () { return Math.random() * 0.06 + 0.02; },
+            angle: function () { return Math.random() * Math.PI * 2; }
+        };
         this.dots = [];
         this.ctx = ctx;
         this.color = color;
         this.mousePosition = mousePosition;
         this.dotsLength = dotsLength;
+        if (dotConfig) {
+            if (dotConfig.dotRadius)
+                this.dotConfig.dotRadius = dotConfig.dotRadius;
+            if (dotConfig.gravity)
+                this.dotConfig.gravity = dotConfig.gravity;
+            if (dotConfig.fadeSpeed)
+                this.dotConfig.fadeSpeed = dotConfig.fadeSpeed;
+            if (dotConfig.velocity)
+                this.dotConfig.velocity = dotConfig.velocity;
+            if (dotConfig.angle)
+                this.dotConfig.angle = dotConfig.angle;
+        }
         this.initDots();
     }
     Spark.prototype.initDots = function () {
         for (var i = 0; i < this.dotsLength; i++) {
-            this.dots.push(new Dot(this.ctx, Object.create(this.color), Object.create(this.mousePosition)));
+            this.dots.push(new Dot(this.ctx, Object.create(this.color), Object.create(this.mousePosition), this.dotConfig));
         }
     };
     // Return true if finished animation
@@ -98,14 +117,20 @@ var Main = /** @class */ (function () {
         };
         this.canvas = document.createElement('canvas');
         this.ctx = this.canvas.getContext('2d');
+        this.parentElement = document.body;
         this.sparks = [];
-        this.dotsPerSpark = 20;
+        this.dotsPerSpark = 50;
+        this.dotConfig = null;
         this.isStop = true;
         if (config) {
             if (config.length)
                 this.dotsPerSpark = config.length;
             if (config.color)
                 this.color = this.stringToRGBAColorObject(config.color);
+            if (config.element)
+                this.parentElement = config.element;
+            if (config.dotConfig)
+                this.dotConfig = config.dotConfig;
         }
         this.createCanvas();
         this.handleEvents();
@@ -119,7 +144,7 @@ var Main = /** @class */ (function () {
         this.canvas.style.height = '100%';
         this.canvas.style.pointerEvents = 'none';
         this.resizeCanvas();
-        document.body.appendChild(this.canvas);
+        this.parentElement.appendChild(this.canvas);
     };
     Main.prototype.resizeCanvas = function () {
         this.canvas.width = window.innerWidth;
@@ -155,7 +180,7 @@ var Main = /** @class */ (function () {
         window.addEventListener('click', function (event) {
             if (_this.ctx === null)
                 return;
-            _this.sparks.push(new Spark(_this.ctx, _this.color, _this.getMousePosition(event), _this.dotsPerSpark));
+            _this.sparks.push(new Spark(_this.ctx, _this.color, _this.getMousePosition(event), _this.dotsPerSpark, _this.dotConfig));
         });
     };
     Main.prototype.getMousePosition = function (event) {

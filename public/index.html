@@ -44,7 +44,15 @@
     import SparkEffect from "./main.js"
 
     new SparkEffect({
-        color: 'rgb(255,144,255)'
+        color: '#ffccff',
+        length: 50,
+
+        dotConfig: {
+            dotRadius: 1.5,
+            gravity: 0.2,
+            velocity: () => Math.random() * 3 + 1,
+            fadeSpeed: () => Math.random() * 0.06 + 0.02
+        }
     })
 </script>
 </body>

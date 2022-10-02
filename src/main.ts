@@ -1,19 +1,18 @@
-import { MainConfig, MousePosition, RGBAColor } from './types'
+import { MainConfig, MousePosition, RGBAColor, DotConfig } from './types'
 
 // Dot
 class Dot {
     ctx: CanvasRenderingContext2D
     color: RGBAColor
 
-    dotRadius: number = 1.5
-    angle: number = Math.random() * (Math.PI * 2)
-    fadeSpeed: number = Math.random() * 0.05 + 0.01
-
+    dotRadius: number
+    angle: number
+    fadeSpeed: number
+    gravityAcceleration: number
+    velocity: number
+    
     gravity: number = 0
-    gravityAcceleration: number = 0.1
-
     distance: number = 0
-    velocity: number = Math.random() * 4
 
     rootPosition: MousePosition
     currentPosition: MousePosition = {
@@ -21,10 +20,16 @@ class Dot {
         y: 0
     }
 
-    constructor (ctx: CanvasRenderingContext2D, color: RGBAColor, position: MousePosition) {
+    constructor (ctx: CanvasRenderingContext2D, color: RGBAColor, position: MousePosition, config: DotConfig) {
         this.ctx = ctx
         this.color = color
         this.rootPosition = position
+
+        this.dotRadius = config.dotRadius
+        this.gravityAcceleration = config.gravity
+        this.fadeSpeed = config.fadeSpeed()
+        this.velocity = config.velocity()
+        this.angle = config.angle()
     }
 
     private draw () {
@@ -88,20 +93,36 @@ class Spark {
     mousePosition: MousePosition
     dotsLength: number
 
+    dotConfig: DotConfig = {
+        dotRadius: 1.5,
+        gravity: 0.2,
+        velocity: () => Math.random() * 3 + 1,
+        fadeSpeed: () => Math.random() * 0.06 + 0.02,
+        angle: () => Math.random() * Math.PI * 2
+    }
+
     dots: Dot[] = []
 
-    constructor (ctx: CanvasRenderingContext2D, color: RGBAColor, mousePosition: MousePosition, dotsLength: number) {
+    constructor (ctx: CanvasRenderingContext2D, color: RGBAColor, mousePosition: MousePosition, dotsLength: number, dotConfig: DotConfig | null) {
         this.ctx = ctx
         this.color = color
         this.mousePosition = mousePosition
         this.dotsLength = dotsLength
+
+        if (dotConfig) {
+            if (dotConfig.dotRadius) this.dotConfig.dotRadius = dotConfig.dotRadius
+            if (dotConfig.gravity) this.dotConfig.gravity = dotConfig.gravity
+            if (dotConfig.fadeSpeed) this.dotConfig.fadeSpeed = dotConfig.fadeSpeed
+            if (dotConfig.velocity) this.dotConfig.velocity = dotConfig.velocity
+            if (dotConfig.angle) this.dotConfig.angle = dotConfig.angle
+        }
 
         this.initDots()
     }
 
     private initDots () {
         for (let i = 0; i < this.dotsLength; i++) {
-            this.dots.push(new Dot(this.ctx, Object.create(this.color), Object.create(this.mousePosition)))
+            this.dots.push(new Dot(this.ctx, Object.create(this.color), Object.create(this.mousePosition), this.dotConfig))
         }
     }
 
@@ -130,9 +151,11 @@ class Main {
 
     private canvas: HTMLCanvasElement = document.createElement('canvas')
     private ctx: CanvasRenderingContext2D | null = this.canvas.getContext('2d')
+    private parentElement: HTMLElement = document.body
 
     private sparks: Spark[] = []
-    private dotsPerSpark: number = 20
+    private dotsPerSpark: number = 50
+    private dotConfig: DotConfig | null = null
 
     private isStop: boolean = true
 
@@ -140,6 +163,8 @@ class Main {
         if (config) {
             if (config.length) this.dotsPerSpark = config.length
             if (config.color) this.color = this.stringToRGBAColorObject(config.color)
+            if (config.element) this.parentElement = config.element
+            if (config.dotConfig) this.dotConfig = config.dotConfig
         }
 
         this.createCanvas()
@@ -157,7 +182,7 @@ class Main {
         
         this.resizeCanvas()
 
-        document.body.appendChild(this.canvas)
+        this.parentElement.appendChild(this.canvas)
     }
 
     private resizeCanvas () {
@@ -197,7 +222,7 @@ class Main {
         window.addEventListener('click', (event: MouseEvent) => {
             if (this.ctx === null) return
             
-            this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark))
+            this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig))
         })
     }
 

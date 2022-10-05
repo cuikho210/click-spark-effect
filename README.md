@@ -21,20 +21,51 @@ Hiệu ứng tia lửa mỗi khi bạn click chuột ^^
 }
 ```
 
-## Simple Example
+## Simple example with Module
 Download release [here](https://github.com/cuikho210/click-spark-effect/releases/tag/module)
 
 ``` js
 import SparkEffect from './click-spark-effect.module.js'
 
-new SparkEffect({
+const sparkEffect = new SparkEffect({
   color: '#ff90ff',
   length: 30
 })
+
+sparkEffect.listen(window)
 ```
+
+## Simple example with CDN
+Download release [here](https://github.com/cuikho210/click-spark-effect/releases/tag/cdn)
+
+``` html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Demo</title>
+    <!-- ... -->
+    
+    <script defer src='https://github.com/cuikho210/click-spark-effect/releases/download/cdn/click-spark-effect.js'></script>
+</head>
+<body>
+
+    <script>
+        const sparkEffect = new SparkEffect({
+          color: '#ff90ff',
+          length: 30
+        })
+
+        sparkEffect.listen(window)
+    </script>
+</body>
+</html>
+```
+
 ## Example with full config
 ``` js
-new SparkEffect({
+import SparkEffect from './click-spark-effect.module.js'
+
+const sparkEffect = new SparkEffect({
     element: document.getElementById('effect'),
     color: '#ffccff',
     length: 50,
@@ -47,6 +78,9 @@ new SparkEffect({
         angle: () => Math.random() * Math.PI * 2
     }
 })
+
+sparkEffect.listen(document.getElementById('effect-area'))
+sparkEffect.listen(document.querySelectorAll('.btn'))
 ```
 
 ## Methods
@@ -55,3 +89,6 @@ Resume running after pause
 
 ### **stop()**: *void*  
 Pause effect
+
+### **listen(`element`: `HTMLElement` | `Window` | `NodeList`)**: *boolean*
+Listen to the click event

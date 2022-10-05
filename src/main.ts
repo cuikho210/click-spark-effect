@@ -266,6 +266,11 @@ class Main {
         return rgbaColor
     }
 
+    private addEvent (event: MouseEvent): void {
+        if (this.ctx === null) return
+        this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig))
+    }
+
     public start () {
         this.isStop = false
         this.loopCanvas()
@@ -275,14 +280,26 @@ class Main {
         this.isStop = true
     }
 
-    public listen (element: HTMLElement): boolean {
-        if (element && element.addEventListener == undefined) return false
+    public listen (element: HTMLElement | NodeList): boolean {
+        if (!element) return false
         
-        element.addEventListener('click', (event: MouseEvent) => {
-            if (this.ctx === null) return
-            this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig))
-        })
+        // Is NodeList
+        if (element instanceof NodeList) {
+            for (let i = 0; i < element.length; i ++) {
+                // @ts-ignore: Unreachable code error
+                element[i].addEventListener('click', this.addEvent.bind(this))
+            }
 
+            return true
+        }
+
+        // Has addEventListener method
+        if (element.addEventListener == undefined) {
+            console.error('[SparkEffect.listen]', 'Element.addEventListener is undefined')
+            return false
+        }
+
+        element.addEventListener('click', this.addEvent.bind(this))
         return true
     }
 }

@@ -216,6 +216,11 @@ var Main = /** @class */ (function () {
         }
         return rgbaColor;
     };
+    Main.prototype.addEvent = function (event) {
+        if (this.ctx === null)
+            return;
+        this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig));
+    };
     Main.prototype.start = function () {
         this.isStop = false;
         this.loopCanvas();
@@ -224,14 +229,22 @@ var Main = /** @class */ (function () {
         this.isStop = true;
     };
     Main.prototype.listen = function (element) {
-        var _this = this;
-        if (element && element.addEventListener == undefined)
+        if (!element)
             return false;
-        element.addEventListener('click', function (event) {
-            if (_this.ctx === null)
-                return;
-            _this.sparks.push(new Spark(_this.ctx, _this.color, _this.getMousePosition(event), _this.dotsPerSpark, _this.dotConfig));
-        });
+        // Is NodeList
+        if (element instanceof NodeList) {
+            for (var i = 0; i < element.length; i++) {
+                // @ts-ignore: Unreachable code error
+                element[i].addEventListener('click', this.addEvent.bind(this));
+            }
+            return true;
+        }
+        // Has addEventListener method
+        if (element.addEventListener == undefined) {
+            console.error('[SparkEffect.listen]', 'Element.addEventListener is undefined');
+            return false;
+        }
+        element.addEventListener('click', this.addEvent.bind(this));
         return true;
     };
     return Main;

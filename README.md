@@ -4,6 +4,8 @@ Hiệu ứng tia lửa mỗi khi bạn click chuột ^^
 [[Release]](https://github.com/cuikho210/click-spark-effect/releases/tag/module)  
 [[Demo]](https://cuikho210.github.io/click-spark-effect/public)
 
+![GIF-Demo](https://user-images.githubusercontent.com/86552587/194111757-48607d84-be40-4357-80d7-ff4ddcc1031a.gif)
+
 ## Config
 ``` js
 {

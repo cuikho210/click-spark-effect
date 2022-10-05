@@ -178,11 +178,6 @@ var Main = /** @class */ (function () {
     Main.prototype.handleEvents = function () {
         var _this = this;
         window.addEventListener('resize', function () { return _this.resizeCanvas(); });
-        window.addEventListener('click', function (event) {
-            if (_this.ctx === null)
-                return;
-            _this.sparks.push(new Spark(_this.ctx, _this.color, _this.getMousePosition(event), _this.dotsPerSpark, _this.dotConfig));
-        });
     };
     Main.prototype.getMousePosition = function (event) {
         var rect = this.canvas;
@@ -227,6 +222,17 @@ var Main = /** @class */ (function () {
     };
     Main.prototype.stop = function () {
         this.isStop = true;
+    };
+    Main.prototype.listen = function (element) {
+        var _this = this;
+        if (element && element.addEventListener == undefined)
+            return false;
+        element.addEventListener('click', function (event) {
+            if (_this.ctx === null)
+                return;
+            _this.sparks.push(new Spark(_this.ctx, _this.color, _this.getMousePosition(event), _this.dotsPerSpark, _this.dotConfig));
+        });
+        return true;
     };
     return Main;
 }());

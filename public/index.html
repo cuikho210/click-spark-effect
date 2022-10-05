@@ -17,6 +17,7 @@
             padding: .5rem 1rem;
             background-color: #ff907f;
             border-radius: 5px;
+            cursor: pointer;
             transition: background-color .5s;
         }
 
@@ -27,23 +28,48 @@
         .btn:active {
             top: 1px;
         }
+
+        pre {
+            border: 1px dashed #ff907f;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
 <section>
-    <h1>Title</h1>
-    <p>Test</p>
+    <h1>Click Spark Effect</h1>
+    <p>Demo:</p>
 
-    <a href="https://google.com">[Google]</a>
-    <hr>
+    <pre><code style="color: #ff00ff">
+        import SparkEffect from "./main.js"
+        
+        let sparkEffect = new SparkEffect({
+            color: '#ffccff',
+            length: 50,
 
-    <div class="btn">Test Button</div>
+            dotConfig: {
+                dotRadius: 1.5,
+                gravity: 0.2,
+                velocity: () => Math.random() * 3 + 1,
+                fadeSpeed: () => Math.random() * 0.06 + 0.02
+            }
+        })
+
+        sparkEffect.listen(document.querySelector('.btn'))
+        sparkEffect.listen(document.querySelector('pre'))
+
+        // CLICK ME!
+    </code></pre>
+
+    <div align="center">
+        <div class="btn">Click Me!</div>
+    </div>
 </section>
     
 <script type="module">
     import SparkEffect from "./main.js"
 
-    new SparkEffect({
+    let sparkEffect = new SparkEffect({
         color: '#ffccff',
         length: 50,
 
@@ -54,6 +80,9 @@
             fadeSpeed: () => Math.random() * 0.06 + 0.02
         }
     })
+
+    sparkEffect.listen(document.querySelector('.btn'))
+    sparkEffect.listen(document.querySelector('pre'))
 </script>
 </body>
 </html>

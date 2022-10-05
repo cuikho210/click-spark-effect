@@ -219,12 +219,6 @@ class Main {
 
     private handleEvents () {
         window.addEventListener('resize', () => this.resizeCanvas())
-
-        window.addEventListener('click', (event: MouseEvent) => {
-            if (this.ctx === null) return
-            
-            this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig))
-        })
     }
 
     private getMousePosition (event: MouseEvent): MousePosition {
@@ -279,6 +273,17 @@ class Main {
 
     public stop () {
         this.isStop = true
+    }
+
+    public listen (element: HTMLElement): boolean {
+        if (element && element.addEventListener == undefined) return false
+        
+        element.addEventListener('click', (event: MouseEvent) => {
+            if (this.ctx === null) return
+            this.sparks.push(new Spark(this.ctx, this.color, this.getMousePosition(event), this.dotsPerSpark, this.dotConfig))
+        })
+
+        return true
     }
 }
 

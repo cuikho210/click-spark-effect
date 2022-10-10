@@ -9,7 +9,7 @@ Hiệu ứng tia lửa mỗi khi bạn click chuột ^^
 ## Config
 ``` js
 {
-    color: string // Color of the dot
+    color: string // Hex or RGB
     length: number // Number of dots per click
     element: HTMLElement // Element containing canvas
     
